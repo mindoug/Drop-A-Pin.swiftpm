@@ -1,0 +1,248 @@
+@GuideBook(title: "Drop A Pin", icon: title.png, background: titleBackground.png, firstFile: ContentView.swift) {
+    @WelcomeMessage(title: "Drop A Pin") {
+        Loop through an array of locations to drop a pin on the map for each location.
+    }
+    @Guide {
+        @Step(title: "Drop A Pin") {
+            @ContentAndMedia {
+                
+                ![](daplogo.png)
+                
+                Welcome to the Drop A Pin app!
+            
+                In this project you will learn to use a ForEach loop to iterate through an array of locations.  A pin will be dropped on the map for each location.
+            
+                You will also learn how to create a custom data type using a struct.  The Location struct will be used to make an array of map locations. Each location in the array will have Location as its data type.
+            
+                @GuideButton(type: walkthrough, title: "Start Walkthrough", description: "button description")
+            }
+            @TaskGroup(title: "Content View") {
+                @Task(type: walkthrough, title: "Content View", id: "contentView", file: ContentView.swift) {
+                    Content View
+                    @Page(id: "struct", title: "") {
+                            Code for the ContentView is contained inside the curly braces of the ContentView struct.  
+                    }
+                    @Page(id: "VStack", title: "") {
+                          When you create a new project in SwiftUI, the content view comes with a [VStack](doc://com.apple.documentation/documentation/swiftui/vstack) containing a globe image and Hello World text. DELETE the image and text from inside of the VStack because you won't need it.  If you delete the whole VStack you will see errors until more code is added.  For now, leave the empty VStack in place.
+                    }
+                    @Page(id: "importMK", title: "") {
+                        In order to drop a pin on a map, you will first need a map. Apple makes it really easy to add a map to your project.  The [MapKit](doc://com.apple.documentation/documentation/mapkit/mapkit_for_swiftui) API gives you all of the tools you need to make interactive apps for Apple devices. Find the import SwiftUI statement at the top of the ContentView.  Beneath it, write the code to import MapKit.
+                        ```
+                        import MapKit
+                        ```
+                    }
+                }
+            }
+            @TaskGroup(title: "Setting up the map") {
+                @Task(type: experiment, title: "Map", id: "mapExp", file: ContentView.swift) {
+                    Map
+                    @Page(id: "map", title: "", isAddable: true) {
+                        Now that you've imported MapKit, type Map() inside of the empty VStack. (If you haven't already deleted the image and text from inside of the VStack, do it now.) This is all you need to do to see a map displayed.
+                        ```
+                        Map() //#-learning-code-snippet(mapPosition)
+                        ```
+                    }
+                    @Page(id: "padding", title: "", isAddable: true) {
+                        There is a padding modifier below the VStack that already exits when you create a new SwiftUI project. DELETE the padding() to see what happens.  Click add to put it back.
+                        ```
+                        .padding()
+                        ```
+                    }
+                    @Page(id: "title", title: "", isAddable: true) {
+                        Make use of the VStack to give the page a title above the Map().  Put the text code inside of the VStack above the map.
+                        ```
+                        Text("Birmingham Civil Rights District")
+                        ```
+                    }
+                }
+            }
+            @TaskGroup(title: "Adding Modifiers") {
+                @Task(type: experiment, title: "Modifiers", id: "textmod", file: ContentView.swift) {
+                    Text modifiers
+                    @Page(id: "bold", title: "", isAddable: false) {
+                        Do you remember how to make the text bold using the .bold() modifier?  What if you want to change the font size?  Refer to the [Text developer documentation](doc://com.apple.documentation/documentation/swiftui/text) and adjust the text to look how you prefer.
+                    }
+                    @Page(id: "mapstyle", title: "", isAddable: true) {
+                        You can add modifiers to your map, just like you can with text.  Try adding the [MapStyle](doc://com.apple.documentation/documentation/mapkit/mapstyle) modifier first.  There are three map styles: .hybrid, .imagery, and .standard. You can read more about them in the Apple Developer Documentation. Start with .standard and try each one.  
+                        ```
+                        .mapStyle(.standard) //#-learning-code-snippet(elevation)
+                        ```
+                    }
+                    @Page(id: "elevation", title: "", isAddable: true) {
+                        For this project we are going to set mapStyle to .hybrid and elevation to .realistic.  Go ahead and make that change in your code by editing the .mapStyle property to match the code below.
+                        ```
+                        .mapStyle(.hybrid(elevation: .realistic))
+                        ```
+                    }
+                    @Page(id: "tryit", title: "", isAddable: true) {
+                        Adding the [elevation](doc://com.apple.documentation/documentation/mapkit/mapstyle/elevation) style to the map style gives you more options for how the map looks.  How did the .realistic modifier change the appearance of the map?  Tap inside of the map to explore.  Try changing .realistic to either .automatic or .flat.  Do you notice any differences?   
+                    }
+                }
+            }
+            @TaskGroup(title: "Starting Position") {
+                @Task(type: experiment, title: "Position Variable", id: "startingPosition", file: ContentView.swift) {
+                    Starting position
+                    @Page(id: "zoom", title: "", isAddable: false) {
+                       Did you notice that with a .standard elevation the map starts out showing all of North America? Using .realistic zooms all the way out to show the whole earth.  It's helpful to set a starting position in order to center the map on a specific location.  
+                    }
+                    @Page(id: "position", title: "", isAddable: true) {
+                       Add the following code just beneath the opening curly brace of the ContentView struct.  Contants and variables are usually placed at the top of the file but inside of the opening curly brace.
+                       ```
+                       let position = MapCameraPosition.region(
+                       MKCoordinateRegion(
+                            center: CLLocationCoordinate2D(latitude: 33.5163, longitude: -86.8135),
+                            span: MKCoordinateSpan(latitudeDelta: 1, longitudeDelta: 1)
+                            )
+                        )
+                       ```
+                    }
+                    @Page(id: "mapPosition", title: "", isAddable: true) {
+                        Now you need to pass the position into the map. Add the initial position constant to Map() so that it looks like this:
+                        ```
+                        Map(initialPosition: position) //#-learning-code-snippet(foreachloop)
+                        ```
+                    }
+                }
+            }
+            @TaskGroup(title: "MapCameraPosition and MKCoordinateRegion") {
+                @Task(type: walkthrough, title: "", id: "cameraPosition", file: ContentView.swift) {
+                    Setting the camera position center and span
+                    @Page(id: "mapCameraPosition", title: "") {
+                        The position variable you created uses MapKit's [MapCameraPosition](doc://com.apple.documentation/documentation/mapkit/mapcameraposition) struct to position the map's camera within the app.  
+                    }
+                    @Page(id: "region", title: "") {
+                        MKCoordinateRegion is used to determine where to center the view using latitude and longitude.  The span determines how much of the map to display horizontally and verically.  Right now it's set to 1 degree by 1 degree.  Change the span latitudeDelta and longitudeDelta to 5.  What happens?  Now change it to 0.25.  You may wish to adjust the span again as pins are added to the map.  
+                    }
+                }
+            }
+            @SuccessMessage(message: "") {
+                
+                Congratulations! 
+                    
+                You've got a working map centered around Birmingham, AL!  
+                
+                Now it's time to add locations to the map.
+            }
+        }
+        @Step(title: "Location Struct") {
+            @ContentAndMedia {
+                ![](location.png)
+                Now that the map is set up, it's time to create an array of locations to display. Before you can specify the locations, you first need to define what a location is, or what it's made up of.  You'll do this by creating a custom type using a structure, or struct.
+                
+                You have used data types already, like Int or String, that Apple defined for you using a structure.  If you look at the developer documentation for [MapCameraPosition](doc://com.apple.documentation/documentation/mapkit/mapcameraposition), you will see that it is also a struct that contains all of the properties (variables) used when setting the camera's position.  
+                
+                Take a minute to think through what properties a Location type will need.  A map location will need coordinates, so the Location struct needs a coordinate variable.  Each Location should also have a name so it can be labeled on the map.  Finally, a unique identifier (id) is required by the ForEach loop needed to loop through the array of locations.  You'll learn more about this later.
+                
+                Custom types are often written in a new swift file so that the ContentView doesn't get too cluttered. A Location.swift file has already been created for you in this project.  This is where you will add the Location struct.
+                
+                @GuideButton(type: walkthrough, title: "Continue Walkthrough", description: "continue walkthrough")
+            }
+            @TaskGroup(title: "Location struct") {
+                @Task(type: experiment, title: "Properties", id: "locationproperties", file: Location.swift) {
+                    Location Struct
+                    @Page(id: "properties", title: "", isAddable: true) {
+                        To define a custom type, add all of the required properties (variables) and methods (functions) inside of a struct.  Add the Location properties inside of the empty Location struct.  Why do you think an error message appears?
+                        ```
+                        let id = UUID()
+                        var name: String
+                        var coordinate: CLLocationCoordinate2D
+                        ```
+                    }
+                }
+                @Task(type: experiment, title: "import MapKit", id: "imk", file: Location.swift) {
+                    Import MapKit
+                    @Page(id: "importmk", title: "", isAddable: true) {
+                        You will see an error until you import MapKit because it will not recognize CLLocationCoordinate2D without MapKit.
+                        ```
+                        import MapKit
+                        ```
+                    }
+                }
+            }
+            @TaskGroup(title: "Locations Array") {
+                @Task(type: experiment, title: "Locations", id: "locations", file: ContentView.swift) {
+                    Adding Locations
+                    @Page(id: "array", title: "", isAddable: true) {
+                        The app will display a pin on the map for each location in an array of locations provided.  Add a constant to the top of the ContentView.swift to hold the locations array. 
+                        ```
+                        let locations: [Location] = [
+                        //#-learning-code-snippet(locations)
+                        ]
+                        ```
+                    }
+                    @Page(id: "la", title: "", isAddable: false) {
+                        The locations constant is now set equal to an array of the Location type you made. The square brackets around Location indicate it is an array of that type. The locations you add next will go inside of the square brackets of the locations array.
+                    }
+                    @Page(id: "locations", title: "") {
+                        Add these locations inside of the location array's square brackets. Notice that each location in the array is a Location type taht has a name and coordinate like you defined in the Location struct. Each location in the array is separated by a comma.
+                       
+                        ```
+                        Location(name: "16th St Baptist Church", coordinate: CLLocationCoordinate2D(latitude: 33.5167, longitude: -86.8150)),
+                        Location(name: "Birmingham Civil Rights Institute", coordinate: CLLocationCoordinate2D(latitude: 33.5161, longitude: -86.8135)),
+                        Location(name: "St Paul United Methodist Church", coordinate: CLLocationCoordinate2D(latitude: 33.516068, longitude: -86.815829)),
+                        Location(name: "AG Gaston Motel", coordinate: CLLocationCoordinate2D(latitude: 33.5887994, longitude: -86.7240603)),
+                        Location(name: "Carver Theatre", coordinate: CLLocationCoordinate2D(latitude: 33.514980, longitude: -86.811390))
+                        ```
+                    }  
+                    @Page(id: "aboutLocations", title: "", isAddable: false) {
+                       In addition to the name and coordinate properties in the Location struct, each Location has a unique id.  The id will come into play in the next step when we loop through the array.
+                    }
+                }
+            }
+            @SuccessMessage(message: "") {
+            
+                Great job setting up the map locations! 
+                
+                The next step is to loop through the array and drop a pin on the map for each location.
+            }
+        }
+        @Step(title: "ForEach Loop") {
+            @ContentAndMedia {
+            In SwiftUI, a ForEach loop is used when you need to generate a collection of views from an array of data, like the array of locations. Its syntax is a little different than the regular for loop. 
+                               
+            ![](foreach.png)
+                               
+            If you look in the developer documentation for [ForEeach](doc://com.apple.documentation/documentation/swiftui/foreach), you you will see an example of a ForEach being used to iterate over an array of fonts to display them as text.  In the example, adding Identifiable after the name of the struct indicates that the struct conforms to the [Identifiable](doc://com.apple.documentation/documentation/swift/identifiable) protocol. The Identifiable protocol requires that you use an id property that is guaranteed to always be unique, like UUID (universally unique identifier).  
+                               
+            Why is this needed?  In this project, the location array will likely stay the same.  But what if users could press a button to add additional locations to the array?  Or the locations changed based on the users's current location?  When you are displaying a series of views from an array (like location pins on a map), SwiftUI needs to be able to identify each one uniquely in order to know what to display each time data is changed.
+                               
+            @GuideButton(type: walkthrough, title: "Continue Walkthrough", description: "continue walkthrough")
+        }
+            @TaskGroup(title: "ForEach Loop") {
+                @Task(type: experiment, title: "Adopt the protocol", id: "protocol", file: Location.swift) {
+                    Adopt Identifiable protocol
+                    @Page(id: "ident", title: "", isAddable: true) {
+                        Adopt the Identifiable protocol by adding a colon and Identifiable after the name of the struct in the Location.swift file. It should look like this:
+                        ```
+                       struct Location: Identifiable {
+                        ```
+                    }
+                }
+                @Task(type: experiment, title: "Add the loop", id: "loop", file: ContentView.swift) {
+                    Add the ForEach loop
+                    @Page(id: "foreachloop", title: "", isAddable: true) {
+                        The ForEach loop below loops through the locations array and places an orange [Marker](doc://com.apple.documentation/documentation/mapkit/marker) in each location. The .tint modifier can be used to change the color of the marker.
+                        ```
+                        Map(initialPosition: position) {
+                            ForEach(locations) { location in
+                                Marker(location.name, coordinate: location.coordinate)
+                                    .tint(.orange)
+                            }
+                        }
+                        ```
+                    }
+                }
+            }
+            @SuccessMessage(message: "") {
+                                                 
+                Congratulations!  You've completed the Drop A Pin app!  
+                
+                Tap inside of the app to explore the locations.
+                                                     
+                Your next task is to create a new app that displays locations from an array of coordinates. What will the purpose of your app be? What kinds of places will you want to show to the users? Local coffee shops? Historic locations? Parks?
+                                                   
+                Once you've decided on locations, use the Map app on your device to get the coordinates needed for each location. 
+            }      
+        }
+    }
+}
